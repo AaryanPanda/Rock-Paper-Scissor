@@ -1,166 +1,81 @@
-
-
-//Adding Event Listener to the buttons
-
-var userChoice = document.getElementById("user-choice")
+var userChoice = document.getElementById("user-choice");
+var randomImage = document.getElementById("random-image");
+var score1 = 0;
+var score2 = 0;
 
 document.addEventListener('click', (event) => {
     if (event.target.id == "rock") {
-        let userImage = document.createElement('img')
-        userImage.src = './assets/rock-hand.png'
-        userChoice.innerHTML = ''
-        userChoice.append(userImage)
-        displayRandomImage()
-
-        compareScore()
+        setUserChoiceImage('./assets/rock-hand.png');
+    } else if (event.target.id == "paper") {
+        setUserChoiceImage('./assets/paper-hand.png');
+    } else if (event.target.id == "scissor") {
+        setUserChoiceImage('./assets/scissors-hand.png');
     }
+    displayRandomImage();
+    compareScore();
+});
 
-    else if (event.target.id == "paper") {
-        let userImage = document.createElement('img')
-        userImage.src = './assets/paper-hand.png'
-        userChoice.innerHTML = ''
-        userChoice.append(userImage)
-        displayRandomImage()
-
-        compareScore()
-    }
-
-    else if (event.target.id == "scissor") {
-        let userImage = document.createElement('img')
-        userImage.src = './assets/scissors-hand.png'
-        userChoice.innerHTML = ''
-        userChoice.append(userImage)
-        displayRandomImage()
-
-        compareScore()
-    }
-
-})
-
-
-
-
-
-
-
-//Create Random Nums 
 function getRandomNum(max) {
-    return Math.floor(Math.random() * (max + 1))
+    return Math.floor(Math.random() * (max + 1));
 }
 
-
-
-
-
-
-//Create Random Images
-
-const ImageArray = ['http://127.0.0.1:5500/Rock-Paper-Scissor/assets/rock-hand.png',
-    'http://127.0.0.1:5500/Rock-Paper-Scissor/assets/paper-hand.png',
-    'http://127.0.0.1:5500/Rock-Paper-Scissor/assets/scissors-hand.png']
-
-var randomImage = document.getElementById("random-image")
+const ImageArray = ['./assets/rock-hand.png', './assets/paper-hand.png', './assets/scissors-hand.png'];
 
 function displayRandomImage() {
-    let randomImageSrc = getRandomNum(2)
-
-    randomImage.innerHTML = `<img src="${ImageArray[randomImageSrc]}" alt="Random Image">`
-
-
+    let randomImageSrc = getRandomNum(2);
+    randomImage.innerHTML = `<img src="${ImageArray[randomImageSrc]}" alt="Random Image">`;
 }
 
-
-
-
-
-
-
-//Compare Scores
-let score1 = 0
-let score2 = 0
+function setUserChoiceImage(imageSrc) {
+    let userImage = document.createElement('img');
+    userImage.src = imageSrc;
+    userChoice.innerHTML = '';
+    userChoice.appendChild(userImage);
+}
 
 function compareScore() {
-    let pcScore = randomImage.firstElementChild.src
-    let yourScore = userChoice.firstElementChild.src
-    
+    let pcImageSrc = randomImage.firstElementChild.src;
+    let userImageSrc = userChoice.firstElementChild.src;
+
     if (score1 == 5 || score2 == 5) {
-        resetGame(); 
-    }
-
-    else if (yourScore == pcScore) {
-        console.log("It's a Draw")
-    }
-   
-    else if (
-        (yourScore === ImageArray[0] && pcScore === ImageArray[2]) ||
-        (yourScore === ImageArray[1] && pcScore === ImageArray[0]) ||
-        (yourScore === ImageArray[2] && pcScore === ImageArray[1])
+        resetGame();
+    } else if (userImageSrc === pcImageSrc) {
+        console.log("It's a Draw");
+    } else if (
+        (userImageSrc.includes('rock') && pcImageSrc.includes('scissors')) ||
+        (userImageSrc.includes('paper') && pcImageSrc.includes('rock')) ||
+        (userImageSrc.includes('scissors') && pcImageSrc.includes('paper'))
     ) {
-        
-        score1++
-        updateScore(score1,score2)
-        popup(win)
-    }
-    else {
-        
-        score2++
-        updateScore(score1,score2)
-        popup(lose)
+        score1++;
+        updateScore();
+        popup(win);
+    } else {
+        score2++;
+        updateScore();
+        popup(lose);
     }
 }
 
-
-
-
-
-
-
-
-//Update Score
-function updateScore(score1,score2) {
-    let userScore = document.getElementById("user-score")
-    let pcScore = document.getElementById("pc-score")
-    userScore.innerHTML=score1
-    pcScore.innerHTML=score2
+function updateScore() {
+    let userScoreDisplay = document.getElementById("user-score");
+    let pcScoreDisplay = document.getElementById("pc-score");
+    userScoreDisplay.innerHTML = score1;
+    pcScoreDisplay.innerHTML = score2;
 }
-
-
-
-
-
-
-
-//Update the popup for win/lose
-var win = document.getElementById("you-win")
-var lose = document.getElementById("you-lose")
 
 function popup(result) {
-    if (score1==5 || score2==5) {
-        result.style.display = "block"
+    if (score1 == 5 || score2 == 5) {
+        result.style.display = "block";
     }
-        
 }
 
-
-
-
-
-
-// Function to reset the game
 function resetGame() {
     if (score1 === 5 || score2 === 5) {
-
         window.location.reload();
     }
 }
 
-
-
-
-
-
-//Play Agin Buuton
-var playAgain = document.getElementById("play-again")
-playAgain.addEventListener('click', ()=> {
-    window.location.reload()
-})
+var playAgain = document.getElementById("play-again");
+playAgain.addEventListener('click', () => {
+    window.location.reload();
+});
